@@ -1,0 +1,289 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ecs">
+      <UniqueIdentifier>{C06D880B-2C77-887C-B5F2-9E7C21FB937C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ecs\components">
+      <UniqueIdentifier>{F55E4FFA-E12C-4300-CAC0-B326B62D1F65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engineCore">
+      <UniqueIdentifier>{24065384-10BE-94D1-79C5-6D2D659C2FC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="eventSystem">
+      <UniqueIdentifier>{EC900C8B-5846-8580-E13A-7F574DEF7B84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="external">
+      <UniqueIdentifier>{2839F3DC-1406-4EE8-3D1F-3C90294B8376}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="inputHandler">
+      <UniqueIdentifier>{933E425A-7FA1-D1FE-2827-0AB514699D81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="physicsEngine">
+      <UniqueIdentifier>{BE04DC44-2AC5-577B-F3FF-A0F85F7F9C57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{9C6AA017-8837-FB22-B150-E9CA9D7C30B1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\components">
+      <UniqueIdentifier>{511A168B-BD7B-F398-46E9-394BB2492A58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="renderer\helper">
+      <UniqueIdentifier>{AB59CD99-17E5-3A5E-20F6-BD528C00975E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resourceLoader">
+      <UniqueIdentifier>{2476C9BD-1044-BDC3-F9D7-2DEAE5449928}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="sceneManager">
+      <UniqueIdentifier>{4EC3F2D5-3A26-827A-E3AB-BA30CFED4DFD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="window">
+      <UniqueIdentifier>{5DFE1E25-49A0-49FB-325B-5D4F1E9CD04B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{12f01de3-2e7b-4f36-84d5-dc5bbfd21a1b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\customEngine.hpp" />
+    <ClInclude Include="src\ecs\components\cameraComponent.hpp">
+      <Filter>ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\lightSourceComponent.hpp">
+      <Filter>ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\physicsComponent.hpp">
+      <Filter>ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\renderComponent.hpp">
+      <Filter>ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\components\transformComponent.hpp">
+      <Filter>ecs\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\ecs.hpp">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ecs\engineSceneInfo.hpp">
+      <Filter>ecs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineCore\application.hpp">
+      <Filter>engineCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineCore\core.h">
+      <Filter>engineCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineCore\entryPoint.h">
+      <Filter>engineCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineCore\layer.hpp">
+      <Filter>engineCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engineCore\layerStack.hpp">
+      <Filter>engineCore</Filter>
+    </ClInclude>
+    <ClInclude Include="src\eventSystem\applicationEvent.hpp">
+      <Filter>eventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\eventSystem\event.hpp">
+      <Filter>eventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\eventSystem\keyEvent.hpp">
+      <Filter>eventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\eventSystem\mouseEvent.hpp">
+      <Filter>eventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="src\inputHandler\inputHandler.hpp">
+      <Filter>inputHandler</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physicsEngine\physicsEngine.hpp">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physicsEngine\physicsUnit.hpp">
+      <Filter>physicsEngine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\imageBuffer.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\indexBuffer.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\renderResourceHandler.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\renderUnit.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\renderer.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\shader.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\shadowMap.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\texture.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\vertex.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\vertexArray.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\vertexBuffer.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\components\vertexBufferLayout.hpp">
+      <Filter>renderer\components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\helper\OGLImport.hpp">
+      <Filter>renderer\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\helper\helperFunctions.hpp">
+      <Filter>renderer\helper</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\imgLoadFunction.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\materialCollection.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\materialData.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\meshCollection.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\meshData.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\objLoadFunction.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\resourceLoader.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\resourceLoaderUnit.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\resourceLoader\vecStructs.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sceneManager\scene.hpp">
+      <Filter>sceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sceneManager\sceneManager.hpp">
+      <Filter>sceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window\glfwWindow.hpp">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="src\window\window.hpp">
+      <Filter>window</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\..\Progs\repos\Game_Engine_Modules\Game_Engine_Modules\Timer.hpp">
+      <Filter>resourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\imguiLayer.hpp">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\engineGui.hpp" />
+    <ClInclude Include="src\ui\changelog.hpp" />
+    <ClInclude Include="src\audio\audioEngine.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\engineCore\application.cpp">
+      <Filter>engineCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineCore\layer.cpp">
+      <Filter>engineCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engineCore\layerStack.cpp">
+      <Filter>engineCore</Filter>
+    </ClCompile>
+    <ClCompile Include="src\external\stb_image.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="src\external\tinyobjloader.cpp">
+      <Filter>external</Filter>
+    </ClCompile>
+    <ClCompile Include="src\inputHandler\inputHandler.cpp">
+      <Filter>inputHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physicsEngine\physicsEngine.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physicsEngine\physicsUnit.cpp">
+      <Filter>physicsEngine</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\imageBuffer.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\indexBuffer.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\renderResourceHandler.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\renderUnit.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\renderer.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\shader.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\shadowMap.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\texture.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\vertexArray.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\components\vertexBuffer.cpp">
+      <Filter>renderer\components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\renderer\helper\OGLImport.cpp">
+      <Filter>renderer\helper</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resourceLoader\materialCollection.cpp">
+      <Filter>resourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resourceLoader\meshCollection.cpp">
+      <Filter>resourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resourceLoader\resourceLoader.cpp">
+      <Filter>resourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\resourceLoader\resourceLoaderUnit.cpp">
+      <Filter>resourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window\glfwWindow.cpp">
+      <Filter>window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\window\window.cpp">
+      <Filter>window</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\imguiLayer.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui.cpp" />
+    <ClCompile Include="..\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\imgui\backends\imgui_impl_glfw.cpp" />
+    <ClCompile Include="..\imgui\backends\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\ui\engineGui.cpp" />
+    <ClCompile Include="src\timer\Timer.cpp">
+      <Filter>resourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\external\miniaudio.cpp" />
+    <ClCompile Include="src\audio\audioEngine.cpp" />
+  </ItemGroup>
+</Project>

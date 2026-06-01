@@ -1,0 +1,832 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug linux-x64|x64">
+      <Configuration>Debug linux-x64</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug linux-x64|Win32">
+      <Configuration>Debug linux-x64</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug linux-x86|x64">
+      <Configuration>Debug linux-x86</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug linux-x86|Win32">
+      <Configuration>Debug linux-x86</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release linux-x64|x64">
+      <Configuration>Release linux-x64</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release linux-x64|Win32">
+      <Configuration>Release linux-x64</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release linux-x86|x64">
+      <Configuration>Release linux-x86</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release linux-x86|Win32">
+      <Configuration>Release linux-x86</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|x64">
+      <Configuration>Dist</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|Win32">
+      <Configuration>Dist</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist linux-x64|x64">
+      <Configuration>Dist linux-x64</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist linux-x64|Win32">
+      <Configuration>Dist linux-x64</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist linux-x86|x64">
+      <Configuration>Dist linux-x86</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist linux-x86|Win32">
+      <Configuration>Dist linux-x86</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Engine</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x64|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x86|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x64|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x86|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x64|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x86|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release linux-x64|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release linux-x86|x64'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug linux-x64|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug linux-x86|x64'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Dist linux-x64|Win32'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Dist linux-x86|x64'">
+    <PlatformToolset>v145</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug linux-x64|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug linux-x86|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release linux-x64|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release linux-x86|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist linux-x64|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist linux-x86|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Debug-windows-x86_64\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Debug-windows-x86_64\Engine\x64\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Debug-windows-x86\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Debug-windows-x86\Engine\x86\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x64|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Debug-windows-x86_64\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Debug-windows-x86_64\Engine\linux-x64\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x86|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Debug-windows-x86\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Debug-windows-x86\Engine\linux-x86\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Release-windows-x86_64\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Release-windows-x86_64\Engine\x64\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Release-windows-x86\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Release-windows-x86\Engine\x86\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x64|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Release-windows-x86_64\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Release-windows-x86_64\Engine\linux-x64\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x86|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Release-windows-x86\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Release-windows-x86\Engine\linux-x86\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Dist-windows-x86_64\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Dist-windows-x86_64\Engine\x64\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Dist-windows-x86\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Dist-windows-x86\Engine\x86\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x64|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Dist-windows-x86_64\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Dist-windows-x86_64\Engine\linux-x64\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x86|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)..\bin\Dist-windows-x86\Engine\</OutDir>
+    <IntDir>$(ProjectDir)..\bin-int\Dist-windows-x86\Engine\linux-x86\</IntDir>
+    <TargetName>Engine</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;dependencies\imgui-1.92.5;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Debug-windows-x86_64\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Debug-windows-x86_64\Sandbox (mkdir ..\bin\Debug-windows-x86_64\Sandbox)
+IF NOT EXIST ..\bin\Debug-windows-x86_64\Game (mkdir ..\bin\Debug-windows-x86_64\Game)
+IF EXIST ..\bin\Debug-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)
+IF EXIST ..\bin\Debug-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Game &gt; nul)
+IF NOT EXIST ..\bin\Debug-windows-x86_64\FileHopper (mkdir ..\bin\Debug-windows-x86_64\FileHopper)
+IF EXIST ..\bin\Debug-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Debug-windows-x86\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Debug-windows-x86\Sandbox (mkdir ..\bin\Debug-windows-x86\Sandbox)
+IF NOT EXIST ..\bin\Debug-windows-x86\Game (mkdir ..\bin\Debug-windows-x86\Game)
+IF EXIST ..\bin\Debug-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Sandbox &gt; nul)
+IF EXIST ..\bin\Debug-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Game &gt; nul)
+IF NOT EXIST ..\bin\Debug-windows-x86\FileHopper (mkdir ..\bin\Debug-windows-x86\FileHopper)
+IF EXIST ..\bin\Debug-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x64|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Debug-windows-x86_64\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Debug-windows-x86_64\Sandbox (mkdir ..\bin\Debug-windows-x86_64\Sandbox)
+IF NOT EXIST ..\bin\Debug-windows-x86_64\Game (mkdir ..\bin\Debug-windows-x86_64\Game)
+IF EXIST ..\bin\Debug-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)
+IF EXIST ..\bin\Debug-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\Game &gt; nul)
+IF NOT EXIST ..\bin\Debug-windows-x86_64\FileHopper (mkdir ..\bin\Debug-windows-x86_64\FileHopper)
+IF EXIST ..\bin\Debug-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Engine\Engine.dll ..\bin\Debug-windows-x86_64\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x86|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <AdditionalOptions>/MDd %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Debug-windows-x86\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Debug-windows-x86\Sandbox (mkdir ..\bin\Debug-windows-x86\Sandbox)
+IF NOT EXIST ..\bin\Debug-windows-x86\Game (mkdir ..\bin\Debug-windows-x86\Game)
+IF EXIST ..\bin\Debug-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Sandbox &gt; nul)
+IF EXIST ..\bin\Debug-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\Game &gt; nul)
+IF NOT EXIST ..\bin\Debug-windows-x86\FileHopper (mkdir ..\bin\Debug-windows-x86\FileHopper)
+IF EXIST ..\bin\Debug-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86\Engine\Engine.dll ..\bin\Debug-windows-x86\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Release-windows-x86_64\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Release-windows-x86_64\Sandbox (mkdir ..\bin\Release-windows-x86_64\Sandbox)
+IF NOT EXIST ..\bin\Release-windows-x86_64\Game (mkdir ..\bin\Release-windows-x86_64\Game)
+IF EXIST ..\bin\Release-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul)
+IF EXIST ..\bin\Release-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Game &gt; nul)
+IF NOT EXIST ..\bin\Release-windows-x86_64\FileHopper (mkdir ..\bin\Release-windows-x86_64\FileHopper)
+IF EXIST ..\bin\Release-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Release-windows-x86\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Release-windows-x86\Sandbox (mkdir ..\bin\Release-windows-x86\Sandbox)
+IF NOT EXIST ..\bin\Release-windows-x86\Game (mkdir ..\bin\Release-windows-x86\Game)
+IF EXIST ..\bin\Release-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Sandbox &gt; nul)
+IF EXIST ..\bin\Release-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Game &gt; nul)
+IF NOT EXIST ..\bin\Release-windows-x86\FileHopper (mkdir ..\bin\Release-windows-x86\FileHopper)
+IF EXIST ..\bin\Release-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x64|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Release-windows-x86_64\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Release-windows-x86_64\Sandbox (mkdir ..\bin\Release-windows-x86_64\Sandbox)
+IF NOT EXIST ..\bin\Release-windows-x86_64\Game (mkdir ..\bin\Release-windows-x86_64\Game)
+IF EXIST ..\bin\Release-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul)
+IF EXIST ..\bin\Release-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\Game &gt; nul)
+IF NOT EXIST ..\bin\Release-windows-x86_64\FileHopper (mkdir ..\bin\Release-windows-x86_64\FileHopper)
+IF EXIST ..\bin\Release-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Engine\Engine.dll ..\bin\Release-windows-x86_64\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x86|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Release-windows-x86\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Release-windows-x86\Sandbox (mkdir ..\bin\Release-windows-x86\Sandbox)
+IF NOT EXIST ..\bin\Release-windows-x86\Game (mkdir ..\bin\Release-windows-x86\Game)
+IF EXIST ..\bin\Release-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Sandbox &gt; nul)
+IF EXIST ..\bin\Release-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\Game &gt; nul)
+IF NOT EXIST ..\bin\Release-windows-x86\FileHopper (mkdir ..\bin\Release-windows-x86\FileHopper)
+IF EXIST ..\bin\Release-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86\Engine\Engine.dll ..\bin\Release-windows-x86\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Dist-windows-x86_64\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Dist-windows-x86_64\Sandbox (mkdir ..\bin\Dist-windows-x86_64\Sandbox)
+IF NOT EXIST ..\bin\Dist-windows-x86_64\Game (mkdir ..\bin\Dist-windows-x86_64\Game)
+IF EXIST ..\bin\Dist-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul)
+IF EXIST ..\bin\Dist-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Game &gt; nul)
+IF NOT EXIST ..\bin\Dist-windows-x86_64\FileHopper (mkdir ..\bin\Dist-windows-x86_64\FileHopper)
+IF EXIST ..\bin\Dist-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Dist-windows-x86\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Dist-windows-x86\Sandbox (mkdir ..\bin\Dist-windows-x86\Sandbox)
+IF NOT EXIST ..\bin\Dist-windows-x86\Game (mkdir ..\bin\Dist-windows-x86\Game)
+IF EXIST ..\bin\Dist-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Sandbox &gt; nul)
+IF EXIST ..\bin\Dist-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Game &gt; nul)
+IF NOT EXIST ..\bin\Dist-windows-x86\FileHopper (mkdir ..\bin\Dist-windows-x86\FileHopper)
+IF EXIST ..\bin\Dist-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x64|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Dist-windows-x86_64\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Dist-windows-x86_64\Sandbox (mkdir ..\bin\Dist-windows-x86_64\Sandbox)
+IF NOT EXIST ..\bin\Dist-windows-x86_64\Game (mkdir ..\bin\Dist-windows-x86_64\Game)
+IF EXIST ..\bin\Dist-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul)
+IF EXIST ..\bin\Dist-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\Game &gt; nul)
+IF NOT EXIST ..\bin\Dist-windows-x86_64\FileHopper (mkdir ..\bin\Dist-windows-x86_64\FileHopper)
+IF EXIST ..\bin\Dist-windows-x86_64\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Engine\Engine.dll ..\bin\Dist-windows-x86_64\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x86|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>CE_PLATFORM_WINDOWS;CE_BUILD_DLL;GLEW_STATIC;ENGINE_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;dependencies\glew\include;dependencies\glfw\include;dependencies\glm\glm;dependencies\stb;dependencies\tinyobjloader;dependencies\miniaudio;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <ExternalWarningLevel>Level3</ExternalWarningLevel>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;glew32s.lib;glfw3_mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\glew\lib\Release\x64;dependencies\glfw\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Dist-windows-x86\Engine\Engine.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Dist-windows-x86\Sandbox (mkdir ..\bin\Dist-windows-x86\Sandbox)
+IF NOT EXIST ..\bin\Dist-windows-x86\Game (mkdir ..\bin\Dist-windows-x86\Game)
+IF EXIST ..\bin\Dist-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Sandbox &gt; nul)
+IF EXIST ..\bin\Dist-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Game &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\Game &gt; nul)
+IF NOT EXIST ..\bin\Dist-windows-x86\FileHopper (mkdir ..\bin\Dist-windows-x86\FileHopper)
+IF EXIST ..\bin\Dist-windows-x86\Engine\Engine.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\FileHopper &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86\Engine\Engine.dll ..\bin\Dist-windows-x86\FileHopper &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x64|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x64|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x64|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug linux-x86|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist linux-x86|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release linux-x86|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SolutionDir)imgui\backends;$(SolutionDir)imgui;</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\..\Progs\repos\Game_Engine_Modules\Game_Engine_Modules\Timer.hpp" />
+    <ClInclude Include="src\audio\audioEngine.hpp" />
+    <ClInclude Include="src\customEngine.hpp" />
+    <ClInclude Include="src\ecs\components\cameraComponent.hpp" />
+    <ClInclude Include="src\ecs\components\lightSourceComponent.hpp" />
+    <ClInclude Include="src\ecs\components\physicsComponent.hpp" />
+    <ClInclude Include="src\ecs\components\renderComponent.hpp" />
+    <ClInclude Include="src\ecs\components\transformComponent.hpp" />
+    <ClInclude Include="src\ecs\ecs.hpp" />
+    <ClInclude Include="src\ecs\engineSceneInfo.hpp" />
+    <ClInclude Include="src\engineCore\application.hpp" />
+    <ClInclude Include="src\engineCore\core.h" />
+    <ClInclude Include="src\engineCore\entryPoint.h" />
+    <ClInclude Include="src\engineCore\layer.hpp" />
+    <ClInclude Include="src\engineCore\layerStack.hpp" />
+    <ClInclude Include="src\eventSystem\applicationEvent.hpp" />
+    <ClInclude Include="src\eventSystem\event.hpp" />
+    <ClInclude Include="src\eventSystem\keyEvent.hpp" />
+    <ClInclude Include="src\eventSystem\mouseEvent.hpp" />
+    <ClInclude Include="src\inputHandler\inputHandler.hpp" />
+    <ClInclude Include="src\physicsEngine\physicsEngine.hpp" />
+    <ClInclude Include="src\physicsEngine\physicsUnit.hpp" />
+    <ClInclude Include="src\renderer\components\imageBuffer.hpp" />
+    <ClInclude Include="src\renderer\components\indexBuffer.hpp" />
+    <ClInclude Include="src\renderer\components\renderResourceHandler.hpp" />
+    <ClInclude Include="src\renderer\components\renderUnit.hpp" />
+    <ClInclude Include="src\renderer\components\renderer.hpp" />
+    <ClInclude Include="src\renderer\components\shader.hpp" />
+    <ClInclude Include="src\renderer\components\shadowMap.hpp" />
+    <ClInclude Include="src\renderer\components\texture.hpp" />
+    <ClInclude Include="src\renderer\components\vertex.hpp" />
+    <ClInclude Include="src\renderer\components\vertexArray.hpp" />
+    <ClInclude Include="src\renderer\components\vertexBuffer.hpp" />
+    <ClInclude Include="src\renderer\components\vertexBufferLayout.hpp" />
+    <ClInclude Include="src\renderer\helper\OGLImport.hpp" />
+    <ClInclude Include="src\renderer\helper\helperFunctions.hpp" />
+    <ClInclude Include="src\resourceLoader\imgLoadFunction.hpp" />
+    <ClInclude Include="src\resourceLoader\materialCollection.hpp" />
+    <ClInclude Include="src\resourceLoader\materialData.hpp" />
+    <ClInclude Include="src\resourceLoader\meshCollection.hpp" />
+    <ClInclude Include="src\resourceLoader\meshData.hpp" />
+    <ClInclude Include="src\resourceLoader\objLoadFunction.hpp" />
+    <ClInclude Include="src\resourceLoader\resourceLoader.hpp" />
+    <ClInclude Include="src\resourceLoader\resourceLoaderUnit.hpp" />
+    <ClInclude Include="src\resourceLoader\vecStructs.hpp" />
+    <ClInclude Include="src\sceneManager\scene.hpp" />
+    <ClInclude Include="src\sceneManager\sceneManager.hpp" />
+    <ClInclude Include="src\ui\changelog.hpp" />
+    <ClInclude Include="src\ui\engineGui.hpp" />
+    <ClInclude Include="src\ui\imguiLayer.hpp" />
+    <ClInclude Include="src\window\glfwWindow.hpp" />
+    <ClInclude Include="src\window\window.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\imgui\backends\imgui_impl_glfw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\imgui\backends\imgui_impl_opengl3.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_draw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_tables.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\imgui\imgui_widgets.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="src\audio\audioEngine.cpp" />
+    <ClCompile Include="src\engineCore\application.cpp" />
+    <ClCompile Include="src\engineCore\layer.cpp" />
+    <ClCompile Include="src\engineCore\layerStack.cpp" />
+    <ClCompile Include="src\external\miniaudio.cpp" />
+    <ClCompile Include="src\external\stb_image.cpp" />
+    <ClCompile Include="src\external\tinyobjloader.cpp" />
+    <ClCompile Include="src\inputHandler\inputHandler.cpp" />
+    <ClCompile Include="src\physicsEngine\physicsEngine.cpp" />
+    <ClCompile Include="src\physicsEngine\physicsUnit.cpp" />
+    <ClCompile Include="src\renderer\components\imageBuffer.cpp" />
+    <ClCompile Include="src\renderer\components\indexBuffer.cpp" />
+    <ClCompile Include="src\renderer\components\renderResourceHandler.cpp" />
+    <ClCompile Include="src\renderer\components\renderUnit.cpp" />
+    <ClCompile Include="src\renderer\components\renderer.cpp" />
+    <ClCompile Include="src\renderer\components\shader.cpp" />
+    <ClCompile Include="src\renderer\components\shadowMap.cpp" />
+    <ClCompile Include="src\renderer\components\texture.cpp" />
+    <ClCompile Include="src\renderer\components\vertexArray.cpp" />
+    <ClCompile Include="src\renderer\components\vertexBuffer.cpp" />
+    <ClCompile Include="src\renderer\helper\OGLImport.cpp" />
+    <ClCompile Include="src\resourceLoader\materialCollection.cpp" />
+    <ClCompile Include="src\resourceLoader\meshCollection.cpp" />
+    <ClCompile Include="src\resourceLoader\resourceLoader.cpp" />
+    <ClCompile Include="src\resourceLoader\resourceLoaderUnit.cpp" />
+    <ClCompile Include="src\timer\Timer.cpp" />
+    <ClCompile Include="src\ui\engineGui.cpp" />
+    <ClCompile Include="src\ui\imguiLayer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="src\window\glfwWindow.cpp" />
+    <ClCompile Include="src\window\window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\imgui\imgui.vcxproj">
+      <Project>{390ce346-388c-4a2b-a3d6-7c46a5e92812}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

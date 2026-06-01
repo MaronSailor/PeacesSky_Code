@@ -1,0 +1,1606 @@
+#pragma once
+
+#include <customEngine.hpp>
+#include "playerSpecs.hpp"
+#include "platformGrid.hpp"
+
+#include <array>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <limits>
+#include <cstdint>
+#include <random>
+#include <functional>
+
+class BlockManager
+{
+		static constexpr float blockScale = 2.0f;
+		static constexpr float blockCollisionSize = 2.0f;
+		static constexpr float blockSize = blockScale * blockCollisionSize;
+		static constexpr int pointsPerBlock = 1;
+		static constexpr size_t platformCount = 2;
+		float m_ballSpeed = 3.0f;
+
+		size_t platformSize = 6;
+		size_t platformBaseHeight = 5;
+		size_t platformBuildHeight = platformBaseHeight + 3;
+		const float maxDistance = 25.0f;
+		int platformOffsetBlocks = 50;
+		float platformSplitX = (static_cast<float>(platformOffsetBlocks) * blockSize) * 0.5f;
+		float maxStepHeight = blockSize;
+		Vec3 playerCollisionHalfSize{};
+
+	struct BlockRenderInfo
+	{
+		BlockType type;
+		const char* itemId;
+		const char* material;
+	};
+
+	static constexpr size_t blockTypeCount = 5;
+
+	inline static constexpr std::array<BlockRenderInfo, blockTypeCount> blockTypes =
+	{
+		BlockRenderInfo{ BlockType::Stone, "block_stone", "resources/Stone_05-256x256.png" },
+		BlockRenderInfo{ BlockType::Brick1, "block_brick_1", "resources/Brick_09-256x256.png" },
+		BlockRenderInfo{ BlockType::Brick2, "block_brick_2", "resources/Brick_16-256x256.png" },
+		BlockRenderInfo{ BlockType::Metal1, "block_metal_1", "resources/Metal_02-256x256.png" },
+		BlockRenderInfo{ BlockType::Metal2, "block_metal_2", "resources/Metal_05-256x256.png" }
+	};
+
+	struct GridBounds
+	{
+		int minX = 0;
+		int maxX = 0;
+		int minY = 0;
+		int maxY = 0;
+		int minZ = 0;
+		int maxZ = 0;
+	};
+
+	struct CellCoord
+	{
+		int x = 0;
+		int y = 0;
+		int z = 0;
+	};
+
+	struct ChunkRender
+	{
+		uint32_t entity = 0;
+		MeshData mesh{};
+		bool initialized = false;
+	};
+
+	struct RaycastHit
+	{
+		bool hit = false;
+		size_t platformIndex = 0;
+		CellCoord cell{};
+		Vec3 normal{ 0.0f, 0.0f, 0.0f };
+		float distance = 0.0f;
+	};
+
+public:
+	struct BlockHit
+	{
+		size_t platformIndex = 0;
+		int x = 0;
+		int y = 0;
+		int z = 0;
+	};
+
+	BlockManager(CustomEngine::Application* app, Scene& scene, InputHandler& inputHandler, PlayerSpecs& playerSpecs)
+		: app(app), scene(scene), inputHandler(inputHandler), playerSpecs(playerSpecs)
+	{
+	}
+
+	void setPlatformSettings(size_t newPlatformSize, int newPlatformOffsetBlocks)
+	{
+		platformSize = std::max<size_t>(2, newPlatformSize);
+		platformOffsetBlocks = std::max(1, newPlatformOffsetBlocks);
+		platformSplitX = (static_cast<float>(platformOffsetBlocks) * blockSize) * 0.5f;
+		updatePlatformBounds();
+	}
+
+	void setPlayerTeamIndex(size_t teamIndex)
+	{
+		playerTeamIndex = (teamIndex == 0) ? 0 : 1;
+	}
+
+	void setMaxStepHeight(float height)
+	{
+		maxStepHeight = std::max(0.0f, height);
+	}
+
+	void setPlayerCollisionHalfSize(const Vec3& halfSize)
+	{
+		playerCollisionHalfSize = halfSize;
+	}
+
+	// (add alongside setPlayerCollisionHalfSize / setMaxStepHeight)
+	void setBallSpeed(float speed)
+	{
+		m_ballSpeed = std::max(0.0f, speed);
+	}
+
+	void setMaxBuildHeight(int totalHeightBlocks)
+	{
+		const size_t minHeight = platformBaseHeight + 1;
+		platformBuildHeight = std::max(minHeight, static_cast<size_t>(std::max(1, totalHeightBlocks)));
+	}
+
+	void setPlatformBaseHeight(int baseHeightBlocks)
+	{
+		platformBaseHeight = static_cast<size_t>(std::max(1, baseHeightBlocks));
+		if (platformBuildHeight <= platformBaseHeight)
+			platformBuildHeight = platformBaseHeight + 1;
+	}
+
+	float getMaxStepHeight() const
+	{
+		return maxStepHeight;
+	}
+
+	void initializeInventory()
+	{
+		for (const auto& blockType : blockTypes)
+		{
+			playerSpecs.inventory.addItem(blockType.itemId, 10);
+		}
+	}
+
+	void createInitialPlatform()
+	{
+		updatePlatformBounds();
+		initializeGrids();
+
+		std::mt19937 rng{ hasWorldSeed ? worldSeed : std::random_device{}() };
+		std::uniform_int_distribution<size_t> dist(0, blockTypeCount - 1);
+
+		const int baseStartY = static_cast<int>(platformBuildHeight - platformBaseHeight);
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			for (int y = 0; y < static_cast<int>(platformBaseHeight); ++y)
+			{
+				const int gridY = baseStartY + y;
+
+				for (int z = 0; z < static_cast<int>(platformSize); ++z)
+				{
+					for (int x = 0; x < static_cast<int>(platformSize); ++x)
+					{
+						BlockType type = blockTypes[dist(rng)].type;
+						setBlock(platformIndex, { x, gridY, z }, type);
+						adjustPoints(pointsPerBlock);
+					}
+				}
+			}
+
+			ensureChunkEntities(platformIndex);
+			rebuildPlatformMeshes(platformIndex);
+		}
+	}
+
+	void updateSelection()
+	{
+		const std::array<bool, blockTypeCount> keyStates =
+		{
+			inputHandler.keys.one,
+			inputHandler.keys.two,
+			inputHandler.keys.three
+		};
+
+		for (size_t i = 0; i < blockTypeCount; ++i)
+		{
+			if (keyStates[i] && !wasBlockKeyPressed[i])
+			{
+				selectedBlockType = i;
+			}
+			wasBlockKeyPressed[i] = keyStates[i];
+		}
+	}
+
+	void ensureSpatialIndex()
+	{
+	}
+
+	size_t getSelectedBlockCount() const
+	{
+		return playerSpecs.inventory.getCount(blockTypes[selectedBlockType].itemId);
+	}
+
+	bool trySpawnBlock(Vec3& outPlacement, size_t& outBlockType)
+	{
+		BlockHit placement{};
+		if (!tryGetBlockPlacement(placement, outPlacement))
+		{
+			return false;
+		}
+
+		if (!playerSpecs.inventory.removeItem(blockTypes[selectedBlockType].itemId, 1))
+		{
+			return false;
+		}
+
+		outBlockType = selectedBlockType;
+		setBlock(placement.platformIndex, { placement.x, placement.y, placement.z }, blockTypes[selectedBlockType].type);
+		adjustPoints(pointsPerBlock);
+		rebuildPlatformMeshes(placement.platformIndex);
+		return true;
+	}
+
+	void spawnBlock()
+	{
+		Vec3 placement{};
+		size_t blockType = 0;
+		trySpawnBlock(placement, blockType);
+	}
+
+	void spawnRemoteBlock(size_t blockType, const Vec3& placement)
+	{
+		if (blockType >= blockTypeCount)
+		{
+			return;
+		}
+
+		size_t platformIndex = 0;
+		BlockHit cell{};
+		if (!tryGetBlockAtPosition(placement, cell, platformIndex))
+		{
+			return;
+		}
+
+		if (!isCellEmpty(platformIndex, { cell.x, cell.y, cell.z }))
+		{
+			return;
+		}
+
+		setBlock(platformIndex, { cell.x, cell.y, cell.z }, blockTypes[blockType].type);
+		rebuildPlatformMeshes(platformIndex);
+	}
+
+	bool trySpawnBall(Vec3& outPosition, Vec3& outDirection, uint8_t& outTeamIndex)
+	{
+		size_t ballBlockType = 0;
+		if (!tryConsumeBallSlot(ballBlockType))
+		{
+			return false;
+		}
+
+		outDirection = quatRotateVec(scene.sceneCamera.rotation, { 0.0f, 0.0f, 1.0f });
+		outTeamIndex = static_cast<uint8_t>(playerTeamIndex);
+
+		// Offset spawn forward (in the direction the ball will travel) so it
+		// starts outside the player's collision volume
+		const float spawnOffset = 2.0f;
+		outPosition = scene.sceneCamera.location + outDirection * -spawnOffset;
+
+		unsigned int ballEntity = scene.addEntity();
+		ballEntities.push_back(ballEntity);
+		ballPlatformIndices.push_back(outTeamIndex);
+
+		Transform ballTransform;
+		RenderComponent ballRender;
+		PhysicsComponent ballPhysics;
+
+		ballRender.setResourceLoader(app->getResourceloaderPtr());
+
+		scene.entities[ballEntity].addComponent(ballTransform);
+		scene.entities[ballEntity].selectComponent<Transform>().location = outPosition;
+		scene.entities[ballEntity].selectComponent<Transform>().rotation = scene.sceneCamera.rotation;
+
+		scene.entities[ballEntity].addComponent(ballRender);
+		scene.entities[ballEntity].selectComponent<RenderComponent>().setMesh("resources/decodeSphere.obj");
+		scene.entities[ballEntity].selectComponent<RenderComponent>().setMaterial("resources/metal.png");
+		scene.entities[ballEntity].selectComponent<RenderComponent>().setTransformIndex(scene.entities[ballEntity].getComponentIndex<Transform>());
+
+		scene.entities[ballEntity].addComponent(ballPhysics);
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().setTransformIndex(scene.entities[ballEntity].getComponentIndex<Transform>());
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().isStatic = false;
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().isFalling = true;
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().gravityScale = 0.05f;
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().collisionDimensions = { 1.0f, 1.0f, 1.0f };
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().locationInertia = outDirection * -m_ballSpeed;
+
+		return true;
+	}
+
+	void spawnBall()
+	{
+		Vec3 position{};
+		Vec3 direction{};
+		uint8_t teamIndex = 0;
+		trySpawnBall(position, direction, teamIndex);
+	}
+
+	void spawnRemoteBall(const Vec3& position, const Vec3& direction, uint8_t teamIndex)
+	{
+		unsigned int ballEntity = scene.addEntity();
+		ballEntities.push_back(ballEntity);
+		ballPlatformIndices.push_back(teamIndex);
+
+		Transform ballTransform;
+		RenderComponent ballRender;
+		PhysicsComponent ballPhysics;
+
+		ballRender.setResourceLoader(app->getResourceloaderPtr());
+
+		scene.entities[ballEntity].addComponent(ballTransform);
+		scene.entities[ballEntity].selectComponent<Transform>().location = position;
+		scene.entities[ballEntity].selectComponent<Transform>().rotation = { 1.0f, 0.0f, 0.0f, 0.0f };
+
+		scene.entities[ballEntity].addComponent(ballRender);
+		scene.entities[ballEntity].selectComponent<RenderComponent>().setMesh("resources/decodeSphere.obj					");
+		scene.entities[ballEntity].selectComponent<RenderComponent>().setMaterial("resources/metal.png");
+		scene.entities[ballEntity].selectComponent<RenderComponent>().setTransformIndex(scene.entities[ballEntity].getComponentIndex<Transform>());
+
+		scene.entities[ballEntity].addComponent(ballPhysics);
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().setTransformIndex(scene.entities[ballEntity].getComponentIndex<Transform>());
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().isStatic = false;
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().isFalling = true;
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().gravityScale = 0.05f;
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().collisionDimensions = { 1.0f, 1.0f, 1.0f };
+
+		Vec3 forward = normalizeVec(direction);
+		scene.entities[ballEntity].selectComponent<PhysicsComponent>().locationInertia = forward * -m_ballSpeed;
+	}
+
+	int getPoints() const
+	{
+		return playerSpecs.points;
+	}
+
+	size_t getPlayerTeamIndex() const
+	{
+		return playerTeamIndex;
+	}
+
+	size_t getBlockTypeCount() const
+	{
+		return blockTypeCount;
+	}
+
+	const char* getBlockTypeId(size_t index) const
+	{
+		return blockTypes[index].itemId;
+	}
+
+	const char* getBlockTypeMaterial(size_t index) const
+	{
+		return blockTypes[index].material;
+	}
+
+	size_t getSelectedBlockType() const
+	{
+		return selectedBlockType;
+	}
+
+	float getPlatformSurfaceY() const
+	{
+		return blockSize * 0.5f;
+	}
+
+	Vec3 getPlatformSpawnLocation(size_t platformIndex, float halfHeight) const
+	{
+		const float platformX = (platformIndex == 0)
+			? 0.0f
+			: static_cast<float>(platformOffsetBlocks) * blockSize;
+		const float spawnY = getPlatformSurfaceY() + halfHeight + 1.0f;
+		return { platformX, spawnY, 0.0f };
+	}
+
+	size_t getPlatformIndexForPosition(const Vec3& position) const
+	{
+		return getPlatformIndex(position);
+	}
+
+	size_t getPlatformBlockCount(size_t platformIndex) const
+	{
+		return static_cast<size_t>(platformBlockCounts[platformIndex]);
+	}
+
+	void setEntityRemovalCallback(std::function<void(uint32_t)> callback)
+	{
+		onEntityRemoved = std::move(callback);
+	}
+
+	void setWorldSeed(uint32_t seed)
+	{
+		worldSeed = seed;
+		hasWorldSeed = true;
+	}
+
+	Vec3 getBlockCenter(const BlockHit& hit) const
+	{
+		return gridToWorldCenter(hit.platformIndex, { hit.x, hit.y, hit.z });
+	}
+
+	void clearWorld()
+	{
+		// Remove all ball entities from the scene
+		for (int i = static_cast<int>(ballEntities.size()) - 1; i >= 0; --i)
+		{
+			uint32_t ballEntity = ballEntities[i];
+			updateEntityIndicesAfterRemoval(ballEntity);
+			if (onEntityRemoved) onEntityRemoved(ballEntity);
+			scene.removeEntity(ballEntity);
+		}
+		ballEntities.clear();
+		ballPlatformIndices.clear();
+
+		// Clear all platform chunk meshes (makes them invisible)
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			for (size_t typeIndex = 0; typeIndex < blockTypeCount; ++typeIndex)
+			{
+				ChunkRender& chunk = chunkRenders[platformIndex][typeIndex];
+				if (chunk.initialized)
+				{
+					chunk.mesh.vertexBufferData.clear();
+					chunk.mesh.indexBufferData.clear();
+					++chunk.mesh.revision;
+				}
+			}
+
+			// Clear the grid data
+			platformGrids[platformIndex].resize(static_cast<int>(platformSize), static_cast<int>(platformBuildHeight), static_cast<int>(platformSize));
+			platformBlockCounts[platformIndex] = 0;
+		}
+
+		// Reset player state
+		playerSpecs.inventory.clear();
+		playerSpecs.points = 0;
+		playerSpecs.stamina = playerSpecs.maxStamina;
+	}
+
+	// Add these public methods after clearWorld()
+
+	bool removeBlockAtPosition(const Vec3& position)
+	{
+		BlockHit hit{};
+		size_t platformIndex = 0;
+		if (!tryGetBlockAtPosition(position, hit, platformIndex))
+		{
+			return false;
+		}
+
+		if (isCellEmpty(platformIndex, { hit.x, hit.y, hit.z }))
+		{
+			return false;
+		}
+
+		removeBlock(hit, BlockRemovalReason::Player, 0);
+		return true;
+	}
+
+	bool removeBlockAtPositionRemote(const Vec3& position)
+	{
+		BlockHit hit{};
+		size_t platformIndex = 0;
+		if (!tryGetBlockAtPosition(position, hit, platformIndex))
+		{
+			return false;
+		}
+
+		if (isCellEmpty(platformIndex, { hit.x, hit.y, hit.z }))
+		{
+			return false;
+		}
+
+		removeBlock(hit, BlockRemovalReason::Remote, 0);
+		return true;
+	}
+
+	bool tryGetTargetedBlock(BlockHit& outBlock)
+	{
+		RaycastHit hit{};
+		if (!raycastPlatforms(hit))
+		{
+			return false;
+		}
+
+		outBlock.platformIndex = hit.platformIndex;
+		CellCoord grid = toGrid(hit.platformIndex, hit.cell);
+		outBlock.x = grid.x;
+		outBlock.y = grid.y;
+		outBlock.z = grid.z;
+		return true;
+	}
+
+	void removeBlockForPlayer(const BlockHit& hit)
+	{
+		removeBlock(hit, BlockRemovalReason::Player, 0);
+	}
+
+	void removeBlockForBall(const BlockHit& hit, size_t ballPlatformIndex)
+	{
+		const BlockRemovalReason reason = (ballPlatformIndex == playerTeamIndex)
+			? BlockRemovalReason::Ball
+			: BlockRemovalReason::Remote;
+
+		removeBlock(hit, reason, ballPlatformIndex);
+	}
+
+	void handleBallBlockCollisions()
+	{
+		for (int ballIndex = static_cast<int>(ballEntities.size()) - 1; ballIndex >= 0; --ballIndex)
+		{
+			BlockHit hit{};
+			if (tryGetCollidingBlock(ballEntities[ballIndex], hit))
+			{
+				const size_t ballPlatform = ballPlatformIndices[ballIndex];
+				removeBlockForBall(hit, ballPlatform);
+				removeBall(static_cast<size_t>(ballIndex));
+			}
+		}
+	}
+
+	void pruneFallenBalls(float yThreshold)
+	{
+		for (int i = static_cast<int>(ballEntities.size()) - 1; i >= 0; --i)
+		{
+			uint32_t entityIndex = ballEntities[i];
+			if (scene.entities[entityIndex].selectComponent<Transform>().location.y < yThreshold)
+			{
+				removeBall(static_cast<size_t>(i));
+			}
+		}
+	}
+
+	bool resolveEntityBlockCollision(uint32_t entity, bool& outOnGround)
+	{
+		outOnGround = false;
+
+		PhysicsComponent& physics = scene.entities[entity].selectComponent<PhysicsComponent>();
+		Transform& transform = scene.entities[entity].selectComponent<Transform>();
+
+		const Vec3 halfSize{
+			physics.collisionDimensions.x * 0.5f * transform.scale.x,
+			physics.collisionDimensions.y * 0.5f * transform.scale.y,
+			physics.collisionDimensions.z * 0.5f * transform.scale.z
+		};
+
+		const float blockHalf = blockSize * 0.5f;
+		const float skinWidth = 0.001f;
+		const float contactEpsilon = 0.05f;
+		bool anyCollision = false;
+
+		// Resolve each axis independently: Y (gravity), X, Z
+		// After each pass the position is updated for the next pass
+		for (int axisPass = 0; axisPass < 3; ++axisPass)
+		{
+			Vec3 testPos = transform.location;
+			if (axisPass == 0)
+				testPos.y += physics.locationInertia.y;
+
+			Vec3 eMin = { testPos.x - halfSize.x, testPos.y - halfSize.y, testPos.z - halfSize.z };
+			Vec3 eMax = { testPos.x + halfSize.x, testPos.y + halfSize.y, testPos.z + halfSize.z };
+
+			CellCoord minC = worldToCell(eMin);
+			CellCoord maxC = worldToCell(eMax);
+
+			float bestDisplacement = std::numeric_limits<float>::max();
+			float bestNewPos = 0.0f;
+			bool bestIsGround = false;
+			bool found = false;
+			float highestBlockTop = -std::numeric_limits<float>::max();
+
+			for (size_t pi = 0; pi < platformCount; ++pi)
+			{
+				const GridBounds& bounds = platformBounds[pi];
+				const int x0 = std::max(minC.x - 1, bounds.minX);
+				const int x1 = std::min(maxC.x + 1, bounds.maxX);
+				const int y0 = std::max(minC.y - 1, bounds.minY);
+				const int y1 = std::min(maxC.y + 1, bounds.maxY);
+				const int z0 = std::max(minC.z - 1, bounds.minZ);
+				const int z1 = std::min(maxC.z + 1, bounds.maxZ);
+
+				for (int cx = x0; cx <= x1; ++cx)
+				{
+					for (int cy = y0; cy <= y1; ++cy)
+					{
+						for (int cz = z0; cz <= z1; ++cz)
+						{
+							CellCoord grid = toGrid(pi, { cx, cy, cz });
+							if (isCellEmpty(pi, grid))
+								continue;
+
+							const float bx = static_cast<float>(cx) * blockSize;
+							const float by = static_cast<float>(cy) * blockSize;
+							const float bz = static_cast<float>(cz) * blockSize;
+
+							if (eMax.x <= bx - blockHalf || eMin.x >= bx + blockHalf ||
+								eMax.y <= by - blockHalf || eMin.y >= by + blockHalf ||
+								eMax.z <= bz - blockHalf || eMin.z >= bz + blockHalf)
+								continue;
+
+							float newPos = 0.0f;
+							bool isGround = false;
+
+							if (axisPass == 0)
+							{
+								const float currentFeetY = transform.location.y - halfSize.y;
+
+								if (physics.locationInertia.y <= 0.0f)
+								{
+									const float blockTop = by + blockHalf;
+									if (blockTop > currentFeetY + contactEpsilon)
+										continue;
+
+									newPos = blockTop + halfSize.y + skinWidth;
+									isGround = true;
+								}
+								else
+								{
+									const float blockBottom = by - blockHalf;
+									const float currentHeadY = transform.location.y + halfSize.y;
+									if (blockBottom < currentHeadY - contactEpsilon)
+										continue;
+
+									newPos = blockBottom - halfSize.y - skinWidth;
+								}
+							}
+							else if (axisPass == 1)
+							{
+								float zOverlap = std::min(eMax.z - (bz - blockHalf), (bz + blockHalf) - eMin.z);
+								if (zOverlap < contactEpsilon)
+									continue;
+
+								float penPos = eMax.x - (bx - blockHalf);
+								float penNeg = (bx + blockHalf) - eMin.x;
+								newPos = (penPos < penNeg)
+									? bx - blockHalf - halfSize.x - skinWidth
+									: bx + blockHalf + halfSize.x + skinWidth;
+
+								float blockTop = by + blockHalf;
+								if (blockTop > highestBlockTop)
+									highestBlockTop = blockTop;
+							}
+							else
+							{
+								float xOverlap = std::min(eMax.x - (bx - blockHalf), (bx + blockHalf) - eMin.x);
+								if (xOverlap < contactEpsilon)
+									continue;
+
+								float penPos = eMax.z - (bz - blockHalf);
+								float penNeg = (bz + blockHalf) - eMin.z;
+								newPos = (penPos < penNeg)
+									? bz - blockHalf - halfSize.z - skinWidth
+									: bz + blockHalf + halfSize.z + skinWidth;
+
+								float blockTop = by + blockHalf;
+								if (blockTop > highestBlockTop)
+									highestBlockTop = blockTop;
+							}
+
+							float currentAxisPos = (axisPass == 0) ? transform.location.y :
+								(axisPass == 1) ? transform.location.x : transform.location.z;
+							float displacement = std::fabs(newPos - currentAxisPos);
+
+							if (!found || displacement < bestDisplacement)
+							{
+								bestDisplacement = displacement;
+								bestNewPos = newPos;
+								bestIsGround = isGround;
+								found = true;
+							}
+						}
+					}
+				}
+			}
+
+			if (found)
+			{
+				anyCollision = true;
+				if (axisPass == 0)
+				{
+					transform.location.y = bestNewPos;
+					physics.locationInertia.y = 0.0f;
+					if (bestIsGround) outOnGround = true;
+				}
+				else
+				{
+					bool stepped = false;
+
+					if (outOnGround && maxStepHeight > 0.0f)
+					{
+						const float feetY = transform.location.y - halfSize.y;
+						const float stepNeeded = highestBlockTop - feetY;
+
+						if (stepNeeded > 0.0f && stepNeeded <= maxStepHeight + contactEpsilon)
+						{
+							const float steppedY = highestBlockTop + halfSize.y + skinWidth;
+							const Vec3 steppedPos = { testPos.x, steppedY, testPos.z };
+
+							if (isSpaceClearAt(steppedPos, halfSize))
+							{
+								transform.location.y = steppedY;
+								stepped = true;
+							}
+						}
+					}
+
+					if (!stepped)
+					{
+						if (axisPass == 1)
+						{
+							transform.location.x = bestNewPos;
+							physics.locationInertia.x = 0.0f;
+						}
+						else
+						{
+							transform.location.z = bestNewPos;
+							physics.locationInertia.z = 0.0f;
+						}
+					}
+				}
+			}
+
+			// After Y pass: detect ground contact so step-up is available for X/Z
+			if (axisPass == 0 && !outOnGround)
+			{
+				const float feetY = transform.location.y - halfSize.y;
+				Vec3 probeMin = { transform.location.x - halfSize.x, feetY - contactEpsilon, transform.location.z - halfSize.z };
+				Vec3 probeMax = { transform.location.x + halfSize.x, feetY + contactEpsilon, transform.location.z + halfSize.z };
+
+				CellCoord pMinC = worldToCell(probeMin);
+				CellCoord pMaxC = worldToCell(probeMax);
+
+				for (size_t pi = 0; pi < platformCount && !outOnGround; ++pi)
+				{
+					const GridBounds& bounds = platformBounds[pi];
+					const int px0 = std::max(pMinC.x - 1, bounds.minX);
+					const int px1 = std::min(pMaxC.x + 1, bounds.maxX);
+					const int py0 = std::max(pMinC.y - 1, bounds.minY);
+					const int py1 = std::min(pMaxC.y + 1, bounds.maxY);
+					const int pz0 = std::max(pMinC.z - 1, bounds.minZ);
+					const int pz1 = std::min(pMaxC.z + 1, bounds.maxZ);
+
+					for (int pcx = px0; pcx <= px1 && !outOnGround; ++pcx)
+					{
+						for (int pcy = py0; pcy <= py1 && !outOnGround; ++pcy)
+						{
+							for (int pcz = pz0; pcz <= pz1 && !outOnGround; ++pcz)
+							{
+								CellCoord grid = toGrid(pi, { pcx, pcy, pcz });
+								if (isCellEmpty(pi, grid))
+									continue;
+
+								const float bx = static_cast<float>(pcx) * blockSize;
+								const float by = static_cast<float>(pcy) * blockSize;
+								const float bz = static_cast<float>(pcz) * blockSize;
+								const float blockTop = by + blockHalf;
+
+								if (probeMax.x <= bx - blockHalf || probeMin.x >= bx + blockHalf ||
+									probeMax.z <= bz - blockHalf || probeMin.z >= bz + blockHalf)
+									continue;
+
+								if (std::fabs(feetY - blockTop) <= contactEpsilon)
+								{
+									transform.location.y = blockTop + halfSize.y;
+									physics.locationInertia.y = 0.0f;
+									outOnGround = true;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return anyCollision || outOnGround;
+	}
+
+	void updateEntityIndicesAfterRemoval(uint32_t entityIndex)
+	{
+		for (uint32_t& index : ballEntities)
+		{
+			if (index > entityIndex) --index;
+		}
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			for (size_t typeIndex = 0; typeIndex < blockTypeCount; ++typeIndex)
+			{
+				if (chunkRenders[platformIndex][typeIndex].entity > entityIndex)
+				{
+					--chunkRenders[platformIndex][typeIndex].entity;
+				}
+			}
+		}
+	}
+
+	bool hasActiveBalls() const
+	{
+		return !ballEntities.empty();
+	}
+
+	uint32_t getLastBallEntity() const
+	{
+		return ballEntities.back();
+	}
+
+	bool isBallEntityAlive(uint32_t entity) const
+	{
+		return std::find(ballEntities.begin(), ballEntities.end(), entity) != ballEntities.end();
+	}
+
+	float getBallSpeed() const
+	{
+		return m_ballSpeed;
+	}
+
+private:
+	enum class BlockRemovalReason
+	{
+		Player,
+		Ball,
+		Remote
+	};
+	void initializeGrids()
+	{
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			platformGrids[platformIndex].resize(static_cast<int>(platformSize), static_cast<int>(platformBuildHeight), static_cast<int>(platformSize));
+			platformBlockCounts[platformIndex] = 0;
+		}
+	}
+
+	void resizePlatforms(size_t newPlatformSize)
+	{
+		if (newPlatformSize <= platformSize)
+		{
+			return;
+		}
+
+		const int oldHalf = static_cast<int>(platformSize) / 2;
+		const int newHalf = static_cast<int>(newPlatformSize) / 2;
+		const int shift = newHalf - oldHalf;
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			platformGrids[platformIndex].resizePreserve(static_cast<int>(newPlatformSize), static_cast<int>(platformBuildHeight), static_cast<int>(newPlatformSize), shift, 0, shift);
+			recountPlatformBlocks(platformIndex);
+		}
+
+		platformSize = newPlatformSize;
+		updatePlatformBounds();
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			ensureChunkEntities(platformIndex);
+			rebuildPlatformMeshes(platformIndex);
+		}
+	}
+
+	void recountPlatformBlocks(size_t platformIndex)
+	{
+		const PlatformGrid& grid = platformGrids[platformIndex];
+		int count = 0;
+
+		for (int y = 0; y < grid.height; ++y)
+		{
+			for (int z = 0; z < grid.depth; ++z)
+			{
+				for (int x = 0; x < grid.width; ++x)
+				{
+					if (grid.get(x, y, z) != BlockType::Air)
+					{
+						++count;
+					}
+				}
+			}
+		}
+
+		platformBlockCounts[platformIndex] = count;
+	}
+
+	bool ensurePlatformContains(size_t platformIndex, const CellCoord& cell)
+	{
+		const GridBounds& bounds = platformBounds[platformIndex];
+		if (cell.y < bounds.minY || cell.y > bounds.maxY)
+		{
+			return false;
+		}
+
+		if (isCellInsideBounds(platformIndex, cell))
+		{
+			return true;
+		}
+
+		size_t newSize = platformSize;
+		while (!isCellInsideBounds(platformIndex, cell))
+		{
+			newSize += 2;
+			resizePlatforms(newSize);
+		}
+
+		return true;
+	}
+
+	void updatePlatformBounds()
+	{
+		const int half = static_cast<int>(platformSize) / 2;
+		const int maxY = static_cast<int>(platformBuildHeight - platformBaseHeight);
+		const int minY = maxY - static_cast<int>(platformBuildHeight) + 1;
+
+		platformBounds[0] = { -half, -half + static_cast<int>(platformSize) - 1, minY, maxY, -half, -half + static_cast<int>(platformSize) - 1 };
+		const int offset = platformOffsetBlocks;
+		platformBounds[1] = { offset - half, offset - half + static_cast<int>(platformSize) - 1, minY, maxY, -half, -half + static_cast<int>(platformSize) - 1 };
+	}
+
+	void ensureChunkEntities(size_t platformIndex)
+	{
+		const float platformX = (platformIndex == 0) ? 0.0f : static_cast<float>(platformOffsetBlocks) * blockSize;
+
+		for (size_t typeIndex = 0; typeIndex < blockTypeCount; ++typeIndex)
+		{
+			ChunkRender& chunk = chunkRenders[platformIndex][typeIndex];
+			if (chunk.initialized)
+			{
+				continue;
+			}
+
+			uint32_t entity = scene.addEntity();
+			Transform transform;
+			RenderComponent render;
+
+			render.setResourceLoader(app->getResourceloaderPtr());
+
+			scene.entities[entity].addComponent(transform);
+			scene.entities[entity].selectComponent<Transform>().location = { platformX, 0.0f, 0.0f };
+			scene.entities[entity].selectComponent<Transform>().rotation = { 1.0f, 0.0f, 0.0f, 0.0f };
+			scene.entities[entity].selectComponent<Transform>().scale = { 1.0f, 1.0f, 1.0f };
+
+			scene.entities[entity].addComponent(render);
+			scene.entities[entity].selectComponent<RenderComponent>().setMeshData(&chunk.mesh);
+			scene.entities[entity].selectComponent<RenderComponent>().setMaterial(blockTypes[typeIndex].material);
+			scene.entities[entity].selectComponent<RenderComponent>().setTransformIndex(scene.entities[entity].getComponentIndex<Transform>());
+
+			chunk.entity = entity;
+			chunk.initialized = true;
+		}
+	}
+
+	void rebuildPlatformMeshes(size_t platformIndex)
+	{
+		for (size_t typeIndex = 0; typeIndex < blockTypeCount; ++typeIndex)
+		{
+			ChunkRender& chunk = chunkRenders[platformIndex][typeIndex];
+			buildMeshForType(platformIndex, blockTypes[typeIndex].type, chunk.mesh);
+			++chunk.mesh.revision;
+		}
+	}
+
+	void buildMeshForType(size_t platformIndex, BlockType type, MeshData& outMesh)
+	{
+		outMesh.vertexBufferData.clear();
+		outMesh.indexBufferData.clear();
+
+		const PlatformGrid& grid = platformGrids[platformIndex];
+		const GridBounds& bounds = platformBounds[platformIndex];
+		const int half = static_cast<int>(platformSize) / 2;
+		const float halfSize = blockSize * 0.5f;
+
+		for (int y = 0; y < grid.height; ++y)
+		{
+			for (int z = 0; z < grid.depth; ++z)
+			{
+				for (int x = 0; x < grid.width; ++x)
+				{
+					if (grid.get(x, y, z) != type)
+					{
+						continue;
+					}
+
+					const float centerX = (static_cast<float>(x) - half) * blockSize;
+					const float centerY = (static_cast<float>(bounds.maxY) - static_cast<float>(y)) * blockSize;
+					const float centerZ = (static_cast<float>(z) - half) * blockSize;
+
+					const bool neighborXP = isNeighborSolid(grid, x + 1, y, z);
+					const bool neighborXN = isNeighborSolid(grid, x - 1, y, z);
+					const bool neighborYP = isNeighborSolid(grid, x, y - 1, z);
+					const bool neighborYN = isNeighborSolid(grid, x, y + 1, z);
+					const bool neighborZP = isNeighborSolid(grid, x, y, z + 1);
+					const bool neighborZN = isNeighborSolid(grid, x, y, z - 1);
+
+					if (!neighborXP)
+					{
+						appendQuad(outMesh, { centerX + halfSize, centerY - halfSize, centerZ - halfSize },
+							{ centerX + halfSize, centerY + halfSize, centerZ - halfSize },
+							{ centerX + halfSize, centerY + halfSize, centerZ + halfSize },
+							{ centerX + halfSize, centerY - halfSize, centerZ + halfSize },
+							{ 1.0f, 0.0f, 0.0f });
+					}
+					if (!neighborXN)
+					{
+						appendQuad(outMesh, { centerX - halfSize, centerY - halfSize, centerZ + halfSize },
+							{ centerX - halfSize, centerY + halfSize, centerZ + halfSize },
+							{ centerX - halfSize, centerY + halfSize, centerZ - halfSize },
+							{ centerX - halfSize, centerY - halfSize, centerZ - halfSize },
+							{ -1.0f, 0.0f, 0.0f });
+					}
+					if (!neighborYP)
+					{
+						appendQuad(outMesh, { centerX - halfSize, centerY + halfSize, centerZ - halfSize },
+							{ centerX - halfSize, centerY + halfSize, centerZ + halfSize },
+							{ centerX + halfSize, centerY + halfSize, centerZ + halfSize },
+							{ centerX + halfSize, centerY + halfSize, centerZ - halfSize },
+							{ 0.0f, 1.0f, 0.0f });
+					}
+					if (!neighborYN)
+					{
+						appendQuad(outMesh, { centerX - halfSize, centerY - halfSize, centerZ + halfSize },
+							{ centerX - halfSize, centerY - halfSize, centerZ - halfSize },
+							{ centerX + halfSize, centerY - halfSize, centerZ - halfSize },
+							{ centerX + halfSize, centerY - halfSize, centerZ + halfSize },
+							{ 0.0f, -1.0f, 0.0f });
+					}
+					if (!neighborZP)
+					{
+						appendQuad(outMesh, { centerX - halfSize, centerY - halfSize, centerZ + halfSize },
+							{ centerX + halfSize, centerY - halfSize, centerZ + halfSize },
+							{ centerX + halfSize, centerY + halfSize, centerZ + halfSize },
+							{ centerX - halfSize, centerY + halfSize, centerZ + halfSize },
+							{ 0.0f, 0.0f, 1.0f });
+					}
+					if (!neighborZN)
+					{
+						appendQuad(outMesh, { centerX + halfSize, centerY - halfSize, centerZ - halfSize },
+							{ centerX - halfSize, centerY - halfSize, centerZ - halfSize },
+							{ centerX - halfSize, centerY + halfSize, centerZ - halfSize },
+							{ centerX + halfSize, centerY + halfSize, centerZ - halfSize },
+							{ 0.0f, 0.0f, -1.0f });
+					}
+				}
+			}
+		}
+	}
+
+	void appendQuad(MeshData& mesh, const Vec3& v0, const Vec3& v1, const Vec3& v2, const Vec3& v3, const Vec3& normal)
+	{
+		const unsigned int baseIndex = static_cast<unsigned int>(mesh.vertexBufferData.size());
+
+		mesh.vertexBufferData.push_back({ v0, { 0.0f, 0.0f }, normal });
+		mesh.vertexBufferData.push_back({ v1, { 1.0f, 0.0f }, normal });
+		mesh.vertexBufferData.push_back({ v2, { 1.0f, 1.0f }, normal });
+		mesh.vertexBufferData.push_back({ v3, { 0.0f, 1.0f }, normal });
+
+		mesh.indexBufferData.push_back(baseIndex);
+		mesh.indexBufferData.push_back(baseIndex + 1);
+		mesh.indexBufferData.push_back(baseIndex + 2);
+		mesh.indexBufferData.push_back(baseIndex);
+		mesh.indexBufferData.push_back(baseIndex + 2);
+		mesh.indexBufferData.push_back(baseIndex + 3);
+	}
+
+	bool isNeighborSolid(const PlatformGrid& grid, int x, int y, int z) const
+	{
+		if (!grid.inBounds(x, y, z))
+		{
+			return false;
+		}
+
+		return grid.get(x, y, z) != BlockType::Air;
+	}
+
+	void setBlock(size_t platformIndex, const CellCoord& cell, BlockType type)
+	{
+		PlatformGrid& grid = platformGrids[platformIndex];
+		if (!grid.inBounds(cell.x, cell.y, cell.z))
+		{
+			return;
+		}
+
+		BlockType current = grid.get(cell.x, cell.y, cell.z);
+		if (current == type)
+		{
+			return;
+		}
+
+		if (current == BlockType::Air && type != BlockType::Air)
+		{
+			++platformBlockCounts[platformIndex];
+		}
+		else if (current != BlockType::Air && type == BlockType::Air)
+		{
+			--platformBlockCounts[platformIndex];
+		}
+
+		grid.set(cell.x, cell.y, cell.z, type);
+	}
+
+	void adjustPoints(int delta)
+	{
+		playerSpecs.points = std::max(0, playerSpecs.points + delta);
+	}
+
+	size_t getPlatformIndex(const Vec3& position) const
+	{
+		return (position.x < platformSplitX) ? 0 : 1;
+	}
+
+	CellCoord worldToCell(const Vec3& position) const
+	{
+		return {
+			static_cast<int>(std::round(position.x / blockSize)),
+			static_cast<int>(std::round(position.y / blockSize)),
+			static_cast<int>(std::round(position.z / blockSize))
+		};
+	}
+
+	CellCoord toGrid(size_t platformIndex, const CellCoord& cell) const
+	{
+		const GridBounds& bounds = platformBounds[platformIndex];
+		return { cell.x - bounds.minX, bounds.maxY - cell.y, cell.z - bounds.minZ };
+	}
+
+	CellCoord toCell(size_t platformIndex, const CellCoord& grid) const
+	{
+		const GridBounds& bounds = platformBounds[platformIndex];
+		return { grid.x + bounds.minX, bounds.maxY - grid.y, grid.z + bounds.minZ };
+	}
+
+	Vec3 gridToWorldCenter(size_t platformIndex, const CellCoord& grid) const
+	{
+		CellCoord cell = toCell(platformIndex, grid);
+		return { static_cast<float>(cell.x) * blockSize, static_cast<float>(cell.y) * blockSize, static_cast<float>(cell.z) * blockSize };
+	}
+
+	bool isCellEmpty(size_t platformIndex, const CellCoord& cell) const
+	{
+		const PlatformGrid& grid = platformGrids[platformIndex];
+		return grid.inBounds(cell.x, cell.y, cell.z) && grid.get(cell.x, cell.y, cell.z) == BlockType::Air;
+	}
+
+	bool tryGetBlockAtPosition(const Vec3& position, BlockHit& outBlock, size_t& outPlatformIndex) const
+	{
+		CellCoord cell = worldToCell(position);
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			if (!isCellInsideBounds(platformIndex, cell))
+			{
+				continue;
+			}
+
+			CellCoord grid = toGrid(platformIndex, cell);
+			outPlatformIndex = platformIndex;
+			outBlock.platformIndex = platformIndex;
+			outBlock.x = grid.x;
+			outBlock.y = grid.y;
+			outBlock.z = grid.z;
+			return true;
+		}
+
+		return false;
+	}
+
+	bool tryGetBlockPlacement(BlockHit& outBlock, Vec3& outPosition)
+	{
+		RaycastHit hit{};
+		if (!raycastPlatforms(hit))
+		{
+			return false;
+		}
+
+		CellCoord placementCell = { hit.cell.x + static_cast<int>(hit.normal.x),
+			hit.cell.y + static_cast<int>(hit.normal.y),
+			hit.cell.z + static_cast<int>(hit.normal.z) };
+
+		if (!ensurePlatformContains(hit.platformIndex, placementCell))
+		{
+			return false;
+		}
+
+		CellCoord grid = toGrid(hit.platformIndex, placementCell);
+		if (!isCellEmpty(hit.platformIndex, grid))
+		{
+			return false;
+		}
+
+		outBlock.platformIndex = hit.platformIndex;
+		outBlock.x = grid.x;
+		outBlock.y = grid.y;
+		outBlock.z = grid.z;
+		outPosition = gridToWorldCenter(hit.platformIndex, grid);
+
+		const float blockHalf = blockSize * 0.5f;
+		const Vec3& p = scene.sceneCamera.location;
+		const Vec3& h = playerCollisionHalfSize;
+
+		if (outPosition.x + blockHalf > p.x - h.x && outPosition.x - blockHalf < p.x + h.x &&
+			outPosition.y + blockHalf > p.y - h.y && outPosition.y - blockHalf < p.y + h.y &&
+			outPosition.z + blockHalf > p.z - h.z && outPosition.z - blockHalf < p.z + h.z)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	bool isCellInsideBounds(size_t platformIndex, const CellCoord& cell) const
+	{
+		const GridBounds& bounds = platformBounds[platformIndex];
+		return cell.x >= bounds.minX && cell.x <= bounds.maxX
+			&& cell.y >= bounds.minY && cell.y <= bounds.maxY
+			&& cell.z >= bounds.minZ && cell.z <= bounds.maxZ;
+	}
+
+	RaycastHit raycastPlatform(size_t platformIndex, const Vec3& origin, const Vec3& dir) const
+	{
+		RaycastHit result{};
+		result.platformIndex = platformIndex;
+
+		const float epsilon = 0.00001f;
+		const float infinity = std::numeric_limits<float>::infinity();
+		Vec3 rayDir = normalizeVec(dir);
+
+		CellCoord cell = worldToCell(origin);
+
+		float tMaxX = infinity;
+		float tMaxY = infinity;
+		float tMaxZ = infinity;
+		float tDeltaX = infinity;
+		float tDeltaY = infinity;
+		float tDeltaZ = infinity;
+		int stepX = 0;
+		int stepY = 0;
+		int stepZ = 0;
+
+		auto initAxis = [&](float originAxis, float dirAxis, int cellAxis, float& tMax, float& tDelta, int& step)
+			{
+				if (std::fabs(dirAxis) < epsilon)
+				{
+					step = 0;
+					tMax = infinity;
+					tDelta = infinity;
+					return;
+				}
+
+				step = (dirAxis > 0.0f) ? 1 : -1;
+				float nextBoundary = (dirAxis > 0.0f)
+					? ((static_cast<float>(cellAxis) + 0.5f) * blockSize)
+					: ((static_cast<float>(cellAxis) - 0.5f) * blockSize);
+				tMax = (nextBoundary - originAxis) / dirAxis;
+				tDelta = blockSize / std::fabs(dirAxis);
+			};
+
+		initAxis(origin.x, rayDir.x, cell.x, tMaxX, tDeltaX, stepX);
+		initAxis(origin.y, rayDir.y, cell.y, tMaxY, tDeltaY, stepY);
+		initAxis(origin.z, rayDir.z, cell.z, tMaxZ, tDeltaZ, stepZ);
+
+		float traveled = 0.0f;
+		Vec3 lastNormal{ 0.0f, 0.0f, 0.0f };
+
+		while (traveled <= maxDistance)
+		{
+			if (isCellInsideBounds(platformIndex, cell))
+			{
+				CellCoord grid = toGrid(platformIndex, cell);
+				if (!isCellEmpty(platformIndex, grid))
+				{
+					result.hit = true;
+					result.cell = cell;
+					result.normal = lastNormal;
+					result.distance = traveled;
+					return result;
+				}
+			}
+
+			if (tMaxX < tMaxY)
+			{
+				if (tMaxX < tMaxZ)
+				{
+					cell.x += stepX;
+					traveled = tMaxX;
+					tMaxX += tDeltaX;
+					lastNormal = { static_cast<float>(-stepX), 0.0f, 0.0f };
+				}
+				else
+				{
+					cell.z += stepZ;
+					traveled = tMaxZ;
+					tMaxZ += tDeltaZ;
+					lastNormal = { 0.0f, 0.0f, static_cast<float>(-stepZ) };
+				}
+			}
+			else
+			{
+				if (tMaxY < tMaxZ)
+				{
+					cell.y += stepY;
+					traveled = tMaxY;
+					tMaxY += tDeltaY;
+					lastNormal = { 0.0f, static_cast<float>(-stepY), 0.0f };
+				}
+				else
+				{
+					cell.z += stepZ;
+					traveled = tMaxZ;
+					tMaxZ += tDeltaZ;
+					lastNormal = { 0.0f, 0.0f, static_cast<float>(-stepZ) };
+				}
+			}
+
+			if (stepX == 0 && stepY == 0 && stepZ == 0)
+			{
+				break;
+			}
+		}
+
+		return result;
+	}
+
+	bool raycastPlatforms(RaycastHit& outHit) const
+	{
+		Vec3 origin = scene.sceneCamera.location;
+		Vec3 dir = quatRotateVec(scene.sceneCamera.rotation, { 0.0f, 0.0f, 1.0f });
+		dir = normalizeVec(dir * -1.0f);
+
+		RaycastHit bestHit{};
+		bool found = false;
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			RaycastHit hit = raycastPlatform(platformIndex, origin, dir);
+			if (!hit.hit)
+			{
+				continue;
+			}
+
+			if (!found || hit.distance < bestHit.distance)
+			{
+				bestHit = hit;
+				found = true;
+			}
+		}
+
+		if (found)
+		{
+			outHit = bestHit;
+		}
+
+		return found;
+	}
+
+	void removeBall(size_t ballIndex)
+	{
+		uint32_t entityIndex = ballEntities[ballIndex];
+		scene.removeEntity(entityIndex);
+		if (onEntityRemoved) onEntityRemoved(entityIndex);
+		ballEntities.erase(ballEntities.begin() + ballIndex);
+		ballPlatformIndices.erase(ballPlatformIndices.begin() + ballIndex);
+		updateEntityIndicesAfterRemoval(entityIndex);
+	}
+
+	void removeBlock(const BlockHit& hit, BlockRemovalReason reason, size_t ballPlatformIndex)
+	{
+		BlockType blockType = platformGrids[hit.platformIndex].get(hit.x, hit.y, hit.z);
+
+		setBlock(hit.platformIndex, { hit.x, hit.y, hit.z }, BlockType::Air);
+
+		if (reason == BlockRemovalReason::Player)
+		{
+			addInventoryBlock(blockType);
+			adjustPoints(-pointsPerBlock);
+		}
+		else if (reason == BlockRemovalReason::Ball)
+		{
+			if (ballPlatformIndex != hit.platformIndex)
+			{
+				addInventoryBlock(blockType);
+				adjustPoints(pointsPerBlock);
+			}
+			else
+			{
+				adjustPoints(-pointsPerBlock);
+			}
+		}
+
+		rebuildPlatformMeshes(hit.platformIndex);
+	}
+
+	void addInventoryBlock(BlockType type)
+	{
+		for (const auto& info : blockTypes)
+		{
+			if (info.type == type)
+			{
+				playerSpecs.inventory.addItem(info.itemId, 1);
+				return;
+			}
+		}
+	}
+
+	void computeAabb(const Transform& transform, const PhysicsComponent& physics, Vec3& outMin, Vec3& outMax) const
+	{
+		Vec3 halfSize = {
+			physics.collisionDimensions.x * 0.5f * transform.scale.x,
+			physics.collisionDimensions.y * 0.5f * transform.scale.y,
+			physics.collisionDimensions.z * 0.5f * transform.scale.z
+		};
+
+		outMin = {
+			transform.location.x - halfSize.x,
+			transform.location.y - halfSize.y,
+			transform.location.z - halfSize.z
+		};
+
+		outMax = {
+			transform.location.x + halfSize.x,
+			transform.location.y + halfSize.y,
+			transform.location.z + halfSize.z
+		};
+	}
+
+	bool tryGetCollidingBlock(uint32_t ballEntity, BlockHit& outHit)
+	{
+		PhysicsComponent& ballPhysics = scene.entities[ballEntity].selectComponent<PhysicsComponent>();
+		Transform& ballTransform = scene.entities[ballEntity].selectComponent<Transform>();
+
+		Vec3 ballMin{};
+		Vec3 ballMax{};
+		computeAabb(ballTransform, ballPhysics, ballMin, ballMax);
+
+		CellCoord minCell = worldToCell(ballMin);
+		CellCoord maxCell = worldToCell(ballMax);
+
+		const float blockHalf = blockSize * 0.5f;
+
+		for (size_t platformIndex = 0; platformIndex < platformCount; ++platformIndex)
+		{
+			const GridBounds& bounds = platformBounds[platformIndex];
+
+			const int minX = std::max(minCell.x - 1, bounds.minX);
+			const int maxX = std::min(maxCell.x + 1, bounds.maxX);
+			const int minY = std::max(minCell.y - 1, bounds.minY);
+			const int maxY = std::min(maxCell.y + 1, bounds.maxY);
+			const int minZ = std::max(minCell.z - 1, bounds.minZ);
+			const int maxZ = std::min(maxCell.z + 1, bounds.maxZ);
+
+			for (int x = minX; x <= maxX; ++x)
+			{
+				for (int y = minY; y <= maxY; ++y)
+				{
+					for (int z = minZ; z <= maxZ; ++z)
+					{
+						CellCoord grid = toGrid(platformIndex, { x, y, z });
+						if (isCellEmpty(platformIndex, grid))
+						{
+							continue;
+						}
+
+						const Vec3 blockCenter{
+							static_cast<float>(x) * blockSize,
+							static_cast<float>(y) * blockSize,
+							static_cast<float>(z) * blockSize
+						};
+
+						if (ballMax.x < blockCenter.x - blockHalf || ballMin.x > blockCenter.x + blockHalf ||
+							ballMax.y < blockCenter.y - blockHalf || ballMin.y > blockCenter.y + blockHalf ||
+							ballMax.z < blockCenter.z - blockHalf || ballMin.z > blockCenter.z + blockHalf)
+						{
+							continue;
+						}
+
+						outHit.platformIndex = platformIndex;
+						outHit.x = grid.x;
+						outHit.y = grid.y;
+						outHit.z = grid.z;
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+	static Vec3 quatRotateVec(const Quaternion& q, const Vec3& v)
+	{
+		float ix = q.w * v.x + q.y * v.z - q.z * v.y;
+		float iy = q.w * v.y + q.z * v.x - q.x * v.z;
+		float iz = q.w * v.z + q.x * v.y - q.y * v.x;
+		float iw = -q.x * v.x - q.y * v.y - q.z * v.z;
+		return {
+			ix * q.w + iw * -q.x + iy * -q.z - iz * -q.y,
+			iy * q.w + iw * -q.y + iz * -q.x - ix * -q.z,
+			iz * q.w + iw * -q.z + ix * -q.y - iy * -q.x
+		};
+	}
+
+	static float vecLength(const Vec3& v)
+	{
+		return std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+	}
+
+	static Vec3 normalizeVec(const Vec3& v)
+	{
+		float length = vecLength(v);
+		if (length <= 0.00001f) return { 0.0f, 0.0f, 0.0f };
+		return { v.x / length, v.y / length, v.z / length };
+	}
+
+	std::function<void(uint32_t)> onEntityRemoved;
+	CustomEngine::Application* app;
+	Scene& scene;
+	InputHandler& inputHandler;
+	PlayerSpecs& playerSpecs;
+
+	std::vector<uint32_t> ballEntities;
+	std::vector<uint8_t> ballPlatformIndices;
+	std::array<PlatformGrid, platformCount> platformGrids{};
+	std::array<GridBounds, platformCount> platformBounds{};
+	std::array<int, platformCount> platformBlockCounts{};
+	std::array<std::array<ChunkRender, blockTypeCount>, platformCount> chunkRenders{};
+	std::array<bool, blockTypeCount> wasBlockKeyPressed{};
+	size_t selectedBlockType = 0;
+	size_t playerTeamIndex = 0;
+	uint32_t worldSeed = 0;
+	bool hasWorldSeed = false;
+
+	bool tryConsumeBallSlot(size_t& outBlockType)
+	{
+		for (size_t offset = 0; offset < blockTypeCount; ++offset)
+		{
+			size_t index = (selectedBlockType + offset) % blockTypeCount;
+			if (playerSpecs.inventory.removeItem(blockTypes[index].itemId, 1))
+			{
+				outBlockType = index;
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+		bool isSpaceClearAt(const Vec3& position, const Vec3& halfSize) const
+	{
+		const float blockHalf = blockSize * 0.5f;
+
+		Vec3 eMin = { position.x - halfSize.x, position.y - halfSize.y, position.z - halfSize.z };
+		Vec3 eMax = { position.x + halfSize.x, position.y + halfSize.y, position.z + halfSize.z };
+
+		CellCoord minC = worldToCell(eMin);
+		CellCoord maxC = worldToCell(eMax);
+
+		for (size_t pi = 0; pi < platformCount; ++pi)
+		{
+			const GridBounds& bounds = platformBounds[pi];
+			const int x0 = std::max(minC.x - 1, bounds.minX);
+			const int x1 = std::min(maxC.x + 1, bounds.maxX);
+			const int y0 = std::max(minC.y - 1, bounds.minY);
+			const int y1 = std::min(maxC.y + 1, bounds.maxY);
+			const int z0 = std::max(minC.z - 1, bounds.minZ);
+			const int z1 = std::min(maxC.z + 1, bounds.maxZ);
+
+			for (int cx = x0; cx <= x1; ++cx)
+			{
+				for (int cy = y0; cy <= y1; ++cy)
+				{
+					for (int cz = z0; cz <= z1; ++cz)
+					{
+						CellCoord grid = toGrid(pi, { cx, cy, cz });
+						if (isCellEmpty(pi, grid))
+							continue;
+
+						const float bx = static_cast<float>(cx) * blockSize;
+						const float by = static_cast<float>(cy) * blockSize;
+						const float bz = static_cast<float>(cz) * blockSize;
+
+						if (eMax.x <= bx - blockHalf || eMin.x >= bx + blockHalf ||
+							eMax.y <= by - blockHalf || eMin.y >= by + blockHalf ||
+							eMax.z <= bz - blockHalf || eMin.z >= bz + blockHalf)
+							continue;
+
+						return false;
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+};
